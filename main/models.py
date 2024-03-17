@@ -4,7 +4,6 @@ from cryptography.fernet import Fernet
 # Generate a key and keep it somewhere safe
 # FERNET_KEY should be generated once and stored securely
 FERNET_KEY = b'BNR66rlVfGPp_l67ytWbZzBBVcy_r-M-n-ow6mp_n2c='  # Use Fernet.generate_key() to generate
-cipher_suite = Fernet(FERNET_KEY)
 
 class EmailSettings(models.Model):
     """
@@ -27,10 +26,12 @@ class EmailSettings(models.Model):
 
     def set_password(self, raw_password):
         if raw_password is not None:
+            cipher_suite = Fernet(FERNET_KEY)
             self.email_password = cipher_suite.encrypt(raw_password.encode()).decode()
 
     def get_password(self):
         if self.email_password:
+            cipher_suite = Fernet(FERNET_KEY)
             return cipher_suite.decrypt(self.email_password.encode()).decode()
         return None
 
